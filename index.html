@@ -1,0 +1,570 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Khaled Jouini | Habilitation Universitaire</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+            body {
+                font-family: 'Inter', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #1e1e2f;
+                color: #d4d4dc;
+                display: flex;
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            #sidebar {
+                width: 250px;
+                background-color: #282c34;
+                border-right: 1px solid #3c4049;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                resize: horizontal; /* Permettre le redimensionnement horizontal */
+                overflow: auto;
+                min-width: 200px;
+                max-width: 50%;
+            }
+
+            #sidebar .header {
+                padding: 10px;
+                text-align: center;
+                background-color: #3c4049;
+                color: #d4d4dc;
+            }
+
+            #sidebar .header h2 {
+                font-size: 14px;
+                color: #d4d4dc;
+                margin: 5px 0;
+            }
+
+            #sidebar .header p {
+                font-size: 10px;
+                color: #a6a6a6;
+                margin: 5px 0;
+            }
+
+            #sidebar .header hr {
+                border: 0;
+                height: 1px;
+                background-color: #50545e;
+                margin: 10px 0;
+            }
+
+            #sidebar ul {
+                list-style-type: none;
+                padding: 10px;
+                margin: 0;
+                overflow-y: auto;
+                flex: 1;
+                text-align: left;
+            }
+
+            #sidebar ul li {
+                margin: 3px 0;
+                font-size: 14px;
+            }
+
+            #sidebar ul li ul {
+                padding-left: 20px;
+                margin-top: -1px; /* Réduit l'espacement entre les sous-éléments */
+            }
+
+            #sidebar ul li .folder {
+                cursor: pointer;
+                display: block;
+                padding: 4px 6px;
+                color: #d4d4dc;
+                border-left: 3px solid transparent;
+                transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+            }
+
+            #sidebar ul li .folder:hover {
+                background-color: #383c44;
+                color: #ffffff;
+            }
+
+            #sidebar ul li ul.hidden {
+                display: none;
+            }
+
+            .folder::before {
+                content: '▶'; /* Triangle vers la droite */
+                margin-right: 5px;
+                transition: transform 0.2s ease;
+            }
+
+            .folder.selected::before {
+                content: '▼'; /* Triangle vers le bas */
+            }
+
+            #sidebar ul li a {
+                text-decoration: none;
+                color: #d4d4dc;
+                display: block;
+                padding: 4px 6px;
+                border-left: 3px solid transparent;
+                transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+            }
+
+            #sidebar ul li a:hover {
+                background-color: #383c44;
+                color: #ffffff;
+            }
+
+            #sidebar ul li a.selected {
+                border-left: 3px solid #3ac07a;
+                background-color: #383c44;
+                color: #3ac07a;
+            }
+
+            #sidebar .footer {
+                padding: 10px;
+                text-align: center;
+                background-color: #3c4049;
+            }
+
+            #sidebar .footer hr {
+                border: 0;
+                height: 1px;
+                background-color: #50545e;
+                margin: 10px 0;
+            }
+
+            #sidebar .footer p {
+                font-size: 10px;
+                color: #a6a6a6;
+                margin: 5px 0;
+            }
+
+            #sidebar .footer a {
+                color: #61dafb;
+                text-decoration: none;
+                font-size: 10px;
+            }
+
+            #sidebar .footer a:hover {
+                text-decoration: underline;
+            }
+
+            #viewer {
+                flex: 1;
+                background-color: #1e1e2f;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 10px;
+            }
+
+            #viewer-placeholder {
+                color: #a6a6a6;
+                font-size: 16px;
+                text-align: center;
+            }
+
+            iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+                background-color: #282c34;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                display: none;
+            }
+        </style>
+        <script>
+            function toggleVisibility(id) {
+                const element = document.getElementById(id);
+                const folder = document.querySelector(`[data-id="${id}"]`);
+                if (element.classList.contains('hidden')) {
+                    element.classList.remove('hidden');
+                    folder.classList.add('selected');
+                } else {
+                    element.classList.add('hidden');
+                    folder.classList.remove('selected');
+                }
+            }
+
+            function showPDF(pdfPath) {
+                const viewer = document.getElementById('pdf-viewer');
+                const placeholder = document.getElementById('viewer-placeholder');
+
+                if (pdfPath) {
+                    viewer.src = pdfPath;
+                    viewer.style.display = 'block';
+                    placeholder.style.display = 'none';
+                } else {
+                    viewer.style.display = 'none';
+                    placeholder.style.display = 'block';
+                }
+
+                const links = document.querySelectorAll('#sidebar a');
+                links.forEach(link => link.classList.remove('selected'));
+
+                const selectedLink = Array.from(links).find(link => link.getAttribute('onclick')?.includes(pdfPath));
+                if (selectedLink) {
+                    selectedLink.classList.add('selected');
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div id="sidebar">
+            <div class="header">
+                <h2>Habilitation Universitaire</h2>
+                <h2>Khaled Jouini</h2>
+                <p>Docteur de l’université Paris Dauphine-PSL (France)</p>
+                <p>Maître Assistant à l’ISITCom</p>
+                <hr>
+            </div>
+            <ul>
+    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-0')">1 CV, Diplômes, Titularisation</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/1 Curriculum Vitae.pdf')">1 Curriculum Vitae</a></li>
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-1')">2 Diplômes</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/2 Diplômes/1 Baccalauréat.pdf')">1 Baccalauréat</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/2 Diplômes/2 Maitrise.pdf')">2 Maitrise</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/2 Diplômes/3.1 DEA.pdf')">3.1 DEA</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/2 Diplômes/3.2 Equivalence DEA.pdf')">3.2 Equivalence DEA</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/2 Diplômes/4.1 Doctorat.pdf')">4.1 Doctorat</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/2 Diplômes/4.2 Equivalence Doctorat.pdf')">4.2 Equivalence Doctorat</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-2')">3 Certifications</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-2" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2016 Big Data Mastery Award.pdf')">2016 Big Data Mastery Award</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2018 Apache Kafka.pdf')">2018 Apache Kafka</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2018 Big Data Mastery Award.pdf')">2018 Big Data Mastery Award</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2018Apache Spark Fonda I.pdf')">2018Apache Spark Fonda I</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2024 Apache Spark Fondamentals II.pdf')">2024 Apache Spark Fondamentals II</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2024 Data Science Foundations V2.pdf')">2024 Data Science Foundations V2</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2024 Data Science Methodology.pdf')">2024 Data Science Methodology</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2024 Data Science Tools.pdf')">2024 Data Science Tools</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/3 Certifications/2024 Data Science101.pdf')">2024 Data Science101</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-3" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-3')">4 Formations Pedagogiques</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-3" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/4 Formations Pedagogiques/2024 UOC 1.pdf')">2024 UOC 1</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/4 Formations Pedagogiques/2024 UOC 2.pdf')">2024 UOC 2</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-4" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-4')">5 Titularisation</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-1 CV, Diplômes, Titularisation-4" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/5 Titularisation/2010 Affectation ISITCom.pdf')">2010 Affectation ISITCom</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/5 Titularisation/2012 Titularisation ISITCom.pdf')">2012 Titularisation ISITCom</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/1 CV, Diplômes, Titularisation/5 Titularisation/2022 Passage Grade.pdf')">2022 Passage Grade</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-1')">2 Rapports</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/2 Rapports/1 Rapport Recherche.pdf')">1 Rapport Recherche</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/2 Rapports/2 Recueil Publications Scientifiques.pdf')">2 Recueil Publications Scientifiques</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/2 Rapports/3 Activités Pédagogiques.pdf')">3 Activités Pédagogiques</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/2 Rapports/4 Responsabilités.pdf')">4 Responsabilités</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/2 Rapports/5 Encadrement.pdf')">5 Encadrement</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/2 Rapports/6 Manuscrit Thèse.pdf')">6 Manuscrit Thèse</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-2')">3 Publications Scientifiques</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-2" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-0')">1 Revues Internationales</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-0" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-0')">Q1</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-0" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q1-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q1-0')">2024 Cluster Computing</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q1-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q1/2024 Cluster Computing/Papier.pdf')">Papier</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q1/2024 Cluster Computing/SJR.pdf')">SJR</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q1-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q1-1')">2025 ISWA</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q1-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q1/2025 ISWA/Order.pdf')">Order</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q1/2025 ISWA/Papier.pdf')">Papier</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q1/2025 ISWA/SJR.pdf')">SJR</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-1')">Q2</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-1" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q2-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q2-0')">2023 JIT</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q2-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q2/2023 JIT/Papier.pdf')">Papier</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q2/2023 JIT/SJR.pdf')">SJR</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q2-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q2-1')">2025 IJPC</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q2-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q2/2025 IJPC/Papier.pdf')">Papier</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q2/2025 IJPC/SJR.pdf')">SJR</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-2')">Q3</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-2" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q3-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q3-0')">2022 JISE</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1 Revues Internationales-Q3-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q3/2022 JISE/JCR.pdf')">JCR</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q3/2022 JISE/Papier.pdf')">Papier</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/1 Revues Internationales/Q3/2022 JISE/SJR.pdf')">SJR</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1')">2 Conférences Classées</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-1" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-0')">Core Rank B</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-0" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-0')">2022 ICCCI</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2022 ICCCI/Core Rank.pdf')">Core Rank</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2022 ICCCI/Papier.pdf')">Papier</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-1')">2024 VISAPP</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2024 VISAPP/Core Rank.pdf')">Core Rank</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2024 VISAPP/Papier.pdf')">Papier</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-2')">2025 ICAART</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank B-2" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2025 ICAART/Core Rank.pdf')">Core Rank</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2025 ICAART/Mail Acceptation.pdf')">Mail Acceptation</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2025 ICAART/Mail Registration.pdf')">Mail Registration</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank B/2025 ICAART/Papier.pdf')">Papier</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-1')">Core Rank C</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-1" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-0')">2017 AICCSA 1</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2017 AICCSA 1/Core Rank.pdf')">Core Rank</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2017 AICCSA 1/Papier.pdf')">Papier</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-1')">2017 AICCSA 2</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2017 AICCSA 2/Core Rank.pdf')">Core Rank</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2017 AICCSA 2/Papier.pdf')">Papier</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-2')">2023 IADIS AC</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-2" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2023 IADIS AC/Core Rank.pdf')">Core Rank</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2023 IADIS AC/Papier.pdf')">Papier</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-3" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-3')">2024 AICCSA</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2 Conférences Classées-Core Rank C-3" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2024 AICCSA/AICCSA Certificat.pdf')">AICCSA Certificat</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2024 AICCSA/Core Rank.pdf')">Core Rank</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/2 Conférences Classées/Core Rank C/2024 AICCSA/Papier.pdf')">Papier</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2')">3 Autres Publications</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3 Publications Scientifiques-2" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/3 Autres Publications/2017 COSI.pdf')">2017 COSI</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/3 Autres Publications/2018 BDA.pdf')">2018 BDA</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/3 Publications Scientifiques/3 Autres Publications/2021 IEEE CISP.pdf')">2021 IEEE CISP</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-3" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-3')">4 Fonctions & Responsabilités</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-3" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-0')">Collaborations Scientifiques</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Collaborations Scientifiques/ESIGELEC.pdf')">ESIGELEC</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Collaborations Scientifiques/Hexagone.pdf')">Hexagone</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Collaborations Scientifiques/NTU Irak.pdf')">NTU Irak</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Collaborations Scientifiques/Telecom ParisTech.pdf')">Telecom ParisTech</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-1')">Fonctions administratives et pédagogiques</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Fonctions administratives et pédagogiques/Cliub SOS Villages Enfants.pdf')">Cliub SOS Villages Enfants</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Fonctions administratives et pédagogiques/Conseil Scientifique.pdf')">Conseil Scientifique</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Fonctions administratives et pédagogiques/Mesres 2021.pdf')">Mesres 2021</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Fonctions administratives et pédagogiques/Mesres 2022.pdf')">Mesres 2022</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Fonctions administratives et pédagogiques/Président Commission M Pro. SWM.pdf')">Président Commission M Pro. SWM</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Fonctions administratives et pédagogiques/Président Jurys Délibérations.pdf')">Président Jurys Délibérations</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Fonctions administratives et pédagogiques/THE.pdf')">THE</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-2')">Participation Evénements</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-2" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Participation Evénements/2010 nUSAcc.pdf')">2010 nUSAcc</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Participation Evénements/2022 THE.pdf')">2022 THE</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Participation Evénements/2023 Cyber Def.pdf')">2023 Cyber Def</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Participation Evénements/2023 IADIS AC.pdf')">2023 IADIS AC</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Participation Evénements/2024 AICCSA.pdf')">2024 AICCSA</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Participation Evénements/2024 UOC Décembre.pdf')">2024 UOC Décembre</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Participation Evénements/2024 UOC Novembre.pdf')">2024 UOC Novembre</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-3" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-3')">Responsabilités Recherche</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-4 Fonctions & Responsabilités-3" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Responsabilités Recherche/2023 AMCAI 1.pdf')">2023 AMCAI 1</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Responsabilités Recherche/2023 AMCAI 2.pdf')">2023 AMCAI 2</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/4 Fonctions & Responsabilités/Responsabilités Recherche/2025 AMCAI.pdf')">2025 AMCAI</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-4" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-4')">5 Encadrements & Jurys</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-4" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-0')">1 Encadrement</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/1 Encadrement Doctoral.pdf')">1 Encadrement Doctoral</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/2 Master Recherche.pdf')">2 Master Recherche</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/3 M. Rech. A. Kamel.pdf')">3 M. Rech. A. Kamel</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/4.1 M. Rech.  I. Othmani 1.pdf')">4.1 M. Rech.  I. Othmani 1</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/4.2 M. Rech.  I. Othmani 2.pdf')">4.2 M. Rech.  I. Othmani 2</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/5.1 Ingénieur 1.pdf')">5.1 Ingénieur 1</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/5.2 Ingénieur 2 (Suite).pdf')">5.2 Ingénieur 2 (Suite)</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/1 Encadrement/6 Master Pro.pdf')">6 Master Pro</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-1')">2 Jurys</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-1" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-0')">Membre</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/2 Jurys/Membre/Ingénieur.pdf')">Ingénieur</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/2 Jurys/Membre/Master Pro. SSR.pdf')">Master Pro. SSR</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/2 Jurys/Membre/Master Pro. SWM.pdf')">Master Pro. SWM</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-1')">Président</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/2 Jurys/Président/Ingénieur.pdf')">Ingénieur</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/2 Jurys/Président/Master Pro..pdf')">Master Pro.</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-2')">Rapporteur</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-5 Encadrements & Jurys-2 Jurys-2" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/2 Jurys/Rapporteur/Ingénieur.pdf')">Ingénieur</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/5 Encadrements & Jurys/2 Jurys/Rapporteur/Master Recherche.pdf')">Master Recherche</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-5" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-5')">6 Notes de Cours</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-5" class="hidden">
+                    
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-0" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-0')">1 Streaming (Big) Data et Architectures de données</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-0" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/1 Streaming (Big) Data et Architectures de données/Rapport Plagiat.pdf')">Rapport Plagiat</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/1 Streaming (Big) Data et Architectures de données/Stream_Lakehouse.pdf')">Stream_Lakehouse</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-1" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-1')">2 Data Science & Big Data</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-1" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/2 Data Science & Big Data/Analyse Exploratoire et prédictive.pdf')">Analyse Exploratoire et prédictive</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/2 Data Science & Big Data/Rapport Plagiat.pdf')">Rapport Plagiat</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-2" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-2')">3 NoSQL</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-2" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/3 NoSQL/NoSQL.pdf')">NoSQL</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/3 NoSQL/Rapport Plagiat.pdf')">Rapport Plagiat</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-3" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-3')">4 Frameworks Big Data</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-3" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/4 Frameworks Big Data/Frameworks_Stockage_Traitement_Dist.pdf')">Frameworks_Stockage_Traitement_Dist</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/4 Frameworks Big Data/Rapport Plagiat.pdf')">Rapport Plagiat</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-4" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-4')">5 Administration BD</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-4" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/5 Administration BD/DBA.pdf')">DBA</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/5 Administration BD/Rapport Plagiat.pdf')">Rapport Plagiat</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-5" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-5')">6 Techniques Indexation</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-5" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/6 Techniques Indexation/Rapport Plagiat.pdf')">Rapport Plagiat</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/6 Techniques Indexation/Tech Indexation.pdf')">Tech Indexation</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-6" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-6')">7 BD Avancees</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-6" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/7 BD Avancees/BD Avancées.pdf')">BD Avancées</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/7 BD Avancees/Rapport Plagiat.pdf')">Rapport Plagiat</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <span class="folder" data-id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-7" onclick="toggleVisibility('subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-7')">8 Charges Horaires</span>
+                <ul id="subfolder-Dossier Habilitation Universitaire-6 Notes de Cours-7" class="hidden">
+                    <li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/8 Charges Horaires/2017_2018.pdf')">2017_2018</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/8 Charges Horaires/2021_2022.pdf')">2021_2022</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/8 Charges Horaires/2022_2023.pdf')">2022_2023</a></li><li><a href="#" onclick="showPDF('Dossier Habilitation Universitaire/6 Notes de Cours/8 Charges Horaires/2023_2024.pdf')">2023_2024</a></li>
+                </ul>
+            </li>
+            
+                </ul>
+            </li>
+            
+            </ul>
+            <div class="footer">
+                <hr>
+                <p>Contact</p>
+                <a href="mailto:j.khaled@gmail.com">j.khaled@gmail.com</a>
+            </div>
+        </div>
+        <div id="viewer">
+            <div id="viewer-placeholder">Visionneuse documents</div>
+            <iframe id="pdf-viewer" src="" title="Visionneuse PDF"></iframe>
+        </div>
+    </body>
+    </html>
+    
